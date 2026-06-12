@@ -1,0 +1,164 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format `Y-m-d`, e.g. `2011-12-24`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    email_verified_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Category {
+    id: ID!
+    user_id: ID
+    name: String!
+    icon: String
+    color: String
+    is_default: Boolean!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type PaymentMethod {
+    id: ID!
+    user_id: ID
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Expense {
+    id: ID!
+    user_id: ID!
+    category_id: ID!
+    payment_method_id: ID!
+    amount: Float!
+    description: String
+    expense_date: Date!
+    created_at: DateTime!
+    updated_at: DateTime!
+    user: User! @belongsTo
+    category: Category! @belongsTo
+    paymentMethod: PaymentMethod! @belongsTo
+}
+
+type TopCategorySpent {
+    category: Category!
+    totalAmount: Float!
+    count: Int!
+}
+
+type DashboardMetrics {
+    totalSpentToday: Float!
+    totalSpentThisMonth: Float!
+    totalSpentThisYear: Float!
+    topCategories: [TopCategorySpent!]!
+    recentExpenses: [Expense!]!
+    expenseCount: Int!
+}
+
+type MonthlySummary {
+    month: String!
+    totalSpent: Float!
+    expenseCount: Int!
+}
+
+type AuthPayload {
+    user: User!
+    token: String!
+}
+
+type DeletePayload {
+    success: Boolean!
+    message: String!
+}
+
+type Query {
+    me: User @guard(with: ["sanctum"]) @auth
+
+    dashboard: DashboardMetrics! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Queries\\DashboardQuery@resolve")
+
+    monthlySummaries: [MonthlySummary!]! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Queries\\MonthlySummaryQuery@resolve")
+
+    expenses(
+        startDate: Date
+        endDate: Date
+        categoryId: ID
+        paymentMethodId: ID
+        minAmount: Float
+        maxAmount: Float
+        search: String
+        sort: String
+    ): [Expense!]! @guard(with: ["sanctum"]) @paginate(defaultCount: 15, maxCount: 100, builder: "App\\GraphQL\\Queries\\ExpenseQuery@resolve", type: CONNECTION)
+
+    expense(id: ID! @eq): Expense @guard(with: ["sanctum"]) @find
+
+    categories: [Category!]! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Queries\\CategoryQuery@resolve")
+
+    paymentMethods: [PaymentMethod!]! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Queries\\PaymentMethodQuery@resolve")
+}
+
+type Mutation {
+    register(
+        name: String! @rules(apply: ["required", "string", "max:255"])
+        email: String! @rules(apply: ["required", "email", "unique:users,email"])
+        password: String! @rules(apply: ["required", "string", "min:8"])
+    ): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\AuthMutation@register")
+
+    login(
+        email: String! @rules(apply: ["required", "email"])
+        password: String! @rules(apply: ["required"])
+    ): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\AuthMutation@login")
+
+    logout: DeletePayload! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\AuthMutation@logout")
+
+    createCategory(
+        name: String!
+        icon: String
+        color: String
+    ): Category! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\CategoryMutation@create")
+
+    updateCategory(
+        id: ID!
+        name: String!
+        icon: String
+        color: String
+    ): Category! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\CategoryMutation@update")
+
+    deleteCategory(id: ID!): DeletePayload! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\CategoryMutation@delete")
+
+    createPaymentMethod(
+        name: String!
+    ): PaymentMethod! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\PaymentMethodMutation@create")
+
+    updatePaymentMethod(
+        id: ID!
+        name: String!
+    ): PaymentMethod! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\PaymentMethodMutation@update")
+
+    deletePaymentMethod(id: ID!): DeletePayload! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\PaymentMethodMutation@delete")
+
+    createExpense(
+        amount: Float!
+        category_id: ID!
+        payment_method_id: ID!
+        expense_date: Date!
+        description: String
+    ): Expense! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\ExpenseMutation@create")
+
+    updateExpense(
+        id: ID!
+        amount: Float!
+        category_id: ID!
+        payment_method_id: ID!
+        expense_date: Date!
+        description: String
+    ): Expense! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\ExpenseMutation@update")
+
+    deleteExpense(id: ID!): DeletePayload! @guard(with: ["sanctum"]) @field(resolver: "App\\GraphQL\\Mutations\\ExpenseMutation@delete")
+}
