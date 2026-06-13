@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
-    public function find(int $id): ?Category
+    public function find(string $id): ?Category
     {
         return Category::find($id);
     }
 
-    public function allForUser(int $userId): Collection
+    public function allForUser(string $userId): Collection
     {
         return Category::forUser($userId)->orderBy('name', 'asc')->get();
     }

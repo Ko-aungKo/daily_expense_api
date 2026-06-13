@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['user_id', 'name', 'icon', 'color', 'is_default'])]
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     /**
      * Get the user that owns the category.
@@ -34,7 +35,7 @@ class Category extends Model
      * Scope to return categories available to the given user:
      * system defaults (user_id is null) plus user's custom categories.
      */
-    public function scopeForUser(Builder $query, ?int $userId): Builder
+    public function scopeForUser(Builder $query, ?string $userId): Builder
     {
         return $query->whereNull('user_id')
             ->orWhere('user_id', $userId);

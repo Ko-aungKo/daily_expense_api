@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PaymentMethodRepository implements PaymentMethodRepositoryInterface
 {
-    public function find(int $id): ?PaymentMethod
+    public function find(string $id): ?PaymentMethod
     {
         return PaymentMethod::find($id);
     }
 
-    public function allForUser(int $userId): Collection
+    public function allForUser(string $userId): Collection
     {
         return PaymentMethod::forUser($userId)->orderBy('name', 'asc')->get();
     }

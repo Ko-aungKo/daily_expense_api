@@ -31,14 +31,14 @@ class ExpenseMutation
             'amount' => ['required', 'numeric', 'gt:0'],
             'category_id' => [
                 'required',
-                'integer',
+                'string',
                 Rule::exists('categories', 'id')->where(function ($q) use ($userId) {
                     return $q->whereNull('user_id')->orWhere('user_id', $userId);
                 }),
             ],
             'payment_method_id' => [
                 'required',
-                'integer',
+                'string',
                 Rule::exists('payment_methods', 'id')->where(function ($q) use ($userId) {
                     return $q->whereNull('user_id')->orWhere('user_id', $userId);
                 }),
@@ -74,14 +74,14 @@ class ExpenseMutation
             'amount' => ['required', 'numeric', 'gt:0'],
             'category_id' => [
                 'required',
-                'integer',
+                'string',
                 Rule::exists('categories', 'id')->where(function ($q) use ($userId) {
                     return $q->whereNull('user_id')->orWhere('user_id', $userId);
                 }),
             ],
             'payment_method_id' => [
                 'required',
-                'integer',
+                'string',
                 Rule::exists('payment_methods', 'id')->where(function ($q) use ($userId) {
                     return $q->whereNull('user_id')->orWhere('user_id', $userId);
                 }),

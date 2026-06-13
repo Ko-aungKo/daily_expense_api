@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             // user_id is nullable: null indicates system-default category
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignUlid('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('icon')->nullable();
             $table->string('color')->nullable();

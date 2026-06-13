@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryRepositoryInterface
 {
-    public function find(int $id): ?Category;
+    public function find(string $id): ?Category;
 
-    public function allForUser(int $userId): Collection;
+    public function allForUser(string $userId): Collection;
 
     public function create(array $data): Category;
 

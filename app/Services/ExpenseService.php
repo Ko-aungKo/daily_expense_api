@@ -14,12 +14,12 @@ class ExpenseService
         protected ExpenseRepositoryInterface $expenseRepository
     ) {}
 
-    public function getExpensesQuery(int $userId, ExpenseQueryFiltersDTO $filters): Builder
+    public function getExpensesQuery(string $userId, ExpenseQueryFiltersDTO $filters): Builder
     {
         return $this->expenseRepository->queryWithFilters($userId, $filters);
     }
 
-    public function createExpense(int $userId, ExpenseDTO $dto): Expense
+    public function createExpense(string $userId, ExpenseDTO $dto): Expense
     {
         return $this->expenseRepository->create($userId, $dto);
     }
@@ -34,12 +34,12 @@ class ExpenseService
         return $this->expenseRepository->delete($expense);
     }
 
-    public function getDashboardMetrics(int $userId): array
+    public function getDashboardMetrics(string $userId): array
     {
         return $this->expenseRepository->getDashboardMetrics($userId);
     }
 
-    public function getMonthlySummaries(int $userId): array
+    public function getMonthlySummaries(string $userId): array
     {
         return $this->expenseRepository->getMonthlySummaries($userId);
     }

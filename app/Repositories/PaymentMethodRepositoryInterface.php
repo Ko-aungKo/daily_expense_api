@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface PaymentMethodRepositoryInterface
 {
-    public function find(int $id): ?PaymentMethod;
+    public function find(string $id): ?PaymentMethod;
 
-    public function allForUser(int $userId): Collection;
+    public function allForUser(string $userId): Collection;
 
     public function create(array $data): PaymentMethod;
 

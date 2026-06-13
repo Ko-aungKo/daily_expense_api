@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable(['user_id', 'category_id', 'payment_method_id', 'amount', 'description', 'expense_date'])]
 class Expense extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUlids;
 
     /**
      * Get the attributes that should be cast.
@@ -76,7 +77,7 @@ class Expense extends Model
     /**
      * Scope to filter by category.
      */
-    public function scopeFilterCategory(Builder $query, ?int $categoryId): Builder
+    public function scopeFilterCategory(Builder $query, ?string $categoryId): Builder
     {
         return $categoryId ? $query->where('category_id', $categoryId) : $query;
     }
@@ -84,7 +85,7 @@ class Expense extends Model
     /**
      * Scope to filter by payment method.
      */
-    public function scopeFilterPaymentMethod(Builder $query, ?int $paymentMethodId): Builder
+    public function scopeFilterPaymentMethod(Builder $query, ?string $paymentMethodId): Builder
     {
         return $paymentMethodId ? $query->where('payment_method_id', $paymentMethodId) : $query;
     }

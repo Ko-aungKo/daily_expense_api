@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\PaymentMethod;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DefaultPaymentMethodSeeder extends Seeder
 {
@@ -13,15 +13,15 @@ class DefaultPaymentMethodSeeder extends Seeder
     public function run(): void
     {
         $methods = [
-            ['name' => 'Cash', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Debit Card', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Credit Card', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'PromptPay', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Bank Transfer', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Cash'],
+            ['name' => 'Debit Card'],
+            ['name' => 'Credit Card'],
+            ['name' => 'PromptPay'],
+            ['name' => 'Bank Transfer'],
         ];
 
         foreach ($methods as $method) {
-            DB::table('payment_methods')->updateOrInsert(
+            PaymentMethod::updateOrCreate(
                 ['user_id' => null, 'name' => $method['name']],
                 $method
             );

@@ -12,12 +12,12 @@ class PaymentMethodService
         protected PaymentMethodRepositoryInterface $paymentMethodRepository
     ) {}
 
-    public function getPaymentMethodsForUser(int $userId): Collection
+    public function getPaymentMethodsForUser(string $userId): Collection
     {
         return $this->paymentMethodRepository->allForUser($userId);
     }
 
-    public function createPaymentMethod(int $userId, array $data): PaymentMethod
+    public function createPaymentMethod(string $userId, array $data): PaymentMethod
     {
         $data['user_id'] = $userId;
 

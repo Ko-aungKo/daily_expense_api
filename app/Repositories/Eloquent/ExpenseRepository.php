@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ExpenseRepository implements ExpenseRepositoryInterface
 {
-    public function find(int $id): ?Expense
+    public function find(string $id): ?Expense
     {
         return Expense::find($id);
     }
 
-    public function queryWithFilters(int $userId, ExpenseQueryFiltersDTO $filters): Builder
+    public function queryWithFilters(string $userId, ExpenseQueryFiltersDTO $filters): Builder
     {
         return Expense::where('user_id', $userId)
             ->with(['category', 'paymentMethod'])
@@ -27,7 +27,7 @@ class ExpenseRepository implements ExpenseRepositoryInterface
             ->sort($filters->sort);
     }
 
-    public function create(int $userId, ExpenseDTO $dto): Expense
+    public function create(string $userId, ExpenseDTO $dto): Expense
     {
         return Expense::create([
             'user_id' => $userId,
@@ -57,7 +57,7 @@ class ExpenseRepository implements ExpenseRepositoryInterface
         return $expense->delete();
     }
 
-    public function getDashboardMetrics(int $userId): array
+    public function getDashboardMetrics(string $userId): array
     {
         $today = now()->toDateString();
         $startOfMonth = now()->startOfMonth()->toDateString();
@@ -112,7 +112,7 @@ class ExpenseRepository implements ExpenseRepositoryInterface
         ];
     }
 
-    public function getMonthlySummaries(int $userId): array
+    public function getMonthlySummaries(string $userId): array
     {
         return Expense::where('user_id', $userId)
             ->selectRaw("DATE_FORMAT(expense_date, '%Y-%m') as month, SUM(amount) as total_spent, COUNT(*) as expense_count")

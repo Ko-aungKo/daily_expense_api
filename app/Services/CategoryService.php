@@ -12,12 +12,12 @@ class CategoryService
         protected CategoryRepositoryInterface $categoryRepository
     ) {}
 
-    public function getCategoriesForUser(int $userId): Collection
+    public function getCategoriesForUser(string $userId): Collection
     {
         return $this->categoryRepository->allForUser($userId);
     }
 
-    public function createCategory(int $userId, array $data): Category
+    public function createCategory(string $userId, array $data): Category
     {
         $data['user_id'] = $userId;
         $data['is_default'] = false; // Custom category
